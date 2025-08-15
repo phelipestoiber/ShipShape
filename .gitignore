@@ -1,0 +1,28 @@
+# Arquivo .gitignore para o projeto de Arquitetura Naval com Python e Flet
+
+# 1. Ignorar o Ambiente Virtual
+# Nunca adicione sua pasta de dependências ao Git.
+.venv/
+venv/
+env/
+
+# 2. Ignorar caches e arquivos compilados do Python
+# São gerados automaticamente e não são código-fonte.
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# 3. Ignorar arquivos de configuração de editores e IDEs
+# Configurações pessoais não devem estar no projeto.
+.vscode/
+.idea/
+
+# 4. Ignorar arquivos de sistema operacional
+.DS_Store
+Thumbs.db
+
+# 5. Ignorar arquivos de dados gerados pela aplicação (exemplo)
+# O código deve ser versionado, mas os dados gerados pelo uso não.
+data/projetos_salvos/
+*.log

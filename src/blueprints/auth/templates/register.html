@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block body_class %}auth-page{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <h2 class="auth-title">Criar Nova Conta</h2>
+    <form method="POST" action="">
+        {{ form.hidden_tag() }}
+
+        <div style="display: flex; gap: 20px;">
+            <div style="flex: 1;">
+                <div class="form-group">
+                    {{ form.first_name.label }}
+                    {{ form.first_name(class="form-control", placeholder="Seu primeiro nome") }}
+                </div>
+                <div class="form-group">
+                    {{ form.birth_date.label }}
+                    {{ form.birth_date(class="form-control") }}
+                </div>
+                <div class="form-group">
+                    {{ form.job.label }}
+                    {{ form.job(class="form-control", placeholder="Ex: Engenheiro Naval") }}
+                    {% for error in form.job.errors %}<span class="error" style="color: red; font-size: 0.8em;">[{{ error }}]</span>{% endfor %}
+                </div>
+                <div class="form-group">
+                    {{ form.password.label }}
+                    {{ form.password(class="form-control", placeholder="Mínimo 6 caracteres") }}
+                    {% for error in form.password.errors %}<span class="error" style="color: red; font-size: 0.8em;">[{{ error }}]</span>{% endfor %}
+                </div>
+                 <div class="form-group">
+                    {{ form.segment.label }}
+                    {{ form.segment(class="form-control", placeholder="Ex: Offshore") }}
+                    {% for error in form.segment.errors %}<span class="error" style="color: red; font-size: 0.8em;">[{{ error }}]</span>{% endfor %}
+                </div>
+            </div>
+            <div style="flex: 1;">
+                <div class="form-group">
+                    {{ form.last_name.label }}
+                    {{ form.last_name(class="form-control", placeholder="Seu sobrenome") }}
+                </div>
+                <div class="form-group">
+                    {{ form.email.label }}
+                    {{ form.email(class="form-control", placeholder="seuemail@exemplo.com") }}
+                </div>
+                <div class="form-group">
+                    {{ form.username.label }}
+                    {{ form.username(class="form-control", placeholder="Seu nome de usuário") }}
+                </div>
+                <div class="form-group">
+                    {{ form.confirm_password.label }}
+                    {{ form.confirm_password(class="form-control", placeholder="Confirme sua senha") }}
+                    {% for error in form.confirm_password.errors %}<span class="error" style="color: red; font-size: 0.8em;">[{{ error }}]</span>{% endfor %}
+                </div>
+                <div class="form-group">
+                    {{ form.company.label }}
+                    {{ form.company(class="form-control", placeholder="Nome da sua empresa") }}
+                    {% for error in form.company.errors %}<span class="error" style="color: red; font-size: 0.8em;">[{{ error }}]</span>{% endfor %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-group" style="margin-top: 10px;">
+            {{ form.submit(class="btn") }}
+        </div>
+    </form>
+    
+    <div class="auth-links" style="border-top: 1px solid #ccc; padding-top: 20px;">
+        <p>Já tem uma conta? <a href="{{ url_for('auth.login') }}">Acesse aqui!</a></p>
+    </div>
+</div>
+{% endblock %}

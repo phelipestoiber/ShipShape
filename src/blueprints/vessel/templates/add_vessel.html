@@ -1,0 +1,72 @@
+{% extends "app_base.html" %}
+
+{% block page_title %}
+    Cadastrar Nova Embarcação
+{% endblock %}
+
+{% block app_content %}
+<form method="POST" action="" enctype="multipart/form-data">
+    {{ form.hidden_tag() }}
+
+    <h4><i class="fa-solid fa-tags"></i> Identificação Principal</h4>
+    <hr>
+    <div class="form-row" style="display: flex; gap: 30px;">
+        <div class="form-group" style="flex: 2;">{{ form.name.label }} {{ form.name(class="form-control", placeholder="Ex: Meu Barco I") }}</div>
+        <div class="form-group" style="flex: 1;">{{ form.imo.label }} {{ form.imo(class="form-control", placeholder="Ex: 1234567") }}</div>
+        <div class="form-group" style="flex: 1;">{{ form.n_inscricao.label }} {{ form.n_inscricao(class="form-control", placeholder="Ex: 123456") }}</div>
+        <div class="form-group" style="flex: 1;">{{ form.indicativo.label }} {{ form.indicativo(class="form-control", placeholder="Ex: PY1234") }}</div>
+    </div>
+
+    <h4><i class="fa-solid fa-book"></i> Classificação e Serviço</h4>
+    <hr>
+    <div class="form-row" style="display: flex; gap: 30px;">
+        <div class="form-group" style="flex: 1;">{{ form.tipo.label }} {{ form.tipo(class="form-control") }}</div>
+        <div class="form-group" style="flex: 1;">{{ form.area_navegacao.label }} {{ form.area_navegacao(class="form-control") }}</div>
+        <div class="form-group" style="flex-shrink: 0;">{{ form.propulsada.label }} {{ form.propulsada(class="form-control") }}</div>
+    </div>
+    <div class="form-row" style="display: flex; gap: 30px;">
+        <div class="form-group" style="flex: 1;">{{ form.servico_1.label }} {{ form.servico_1(class="form-control") }}</div>
+        <div class="form-group" style="flex: 1;">{{ form.servico_2.label }} {{ form.servico_2(class="form-control") }}</div>
+        <div class="form-group" style="flex: 1;">{{ form.servico_3.label }} {{ form.servico_3(class="form-control") }}</div>
+        <div class="form-group" style="flex: 1;">{{ form.servico_4.label }} {{ form.servico_4(class="form-control") }}</div>
+    </div>
+
+    <h4><i class="fa-solid fa-hammer"></i> Dados Construtivos</h4>
+    <hr>
+    <div class="form-row" style="display: flex; gap: 30px; align-items: flex-end;">
+        <div class="form-group" style="flex: 2;">{{ form.builder_shipyard.label }} {{ form.builder_shipyard(class="form-control", placeholder="Ex: Meu Estaleiro S/A") }}</div>
+        <div class="form-group" style="flex: 2;">{{ form.construction_location.label }} {{ form.construction_location(class="form-control", placeholder="Ex: Belém, PA") }}</div>
+        <div class="form-group" style="flex: 1;">{{ form.construction_year.label }} {{ form.construction_year(class="form-control", type="number", placeholder="Ex: 2025") }}</div>
+    </div>
+    <div class="form-row" style="display: flex; gap: 30px;">
+        <div class="form-group" style="flex: 1;">{{ form.port_of_registry.label }} {{ form.port_of_registry(class="form-control", placeholder="Ex: Porto de Belém") }}</div>
+        <div class="form-group" style="flex: 1;">{{ form.hull_material.label }} {{ form.hull_material(class="form-control", placeholder="Ex: Aço") }}</div>
+    </div>
+    
+    <h4><i class="fa-solid fa-ruler-combined"></i> Dimensões Principais</h4>
+    <hr>
+    <div class="form-row" style="display: flex; gap: 30px;">
+        <div class="form-group" style="flex: 1;">{{ form.lpp.label }} {{ form.lpp(class="form-control", type="number", step="any", placeholder="Ex: 100.00") }}</div>
+        <div class="form-group" style="flex: 1;">{{ form.boca.label }} {{ form.boca(class="form-control", type="number", step="any", placeholder="Ex: 15.00") }}</div>
+        <div class="form-group" style="flex: 1;">{{ form.pontal.label }} {{ form.pontal(class="form-control", type="number", step="any", placeholder="Ex: 4.00") }}</div>
+    </div>
+
+    <h4><i class="fa-solid fa-users"></i> Capacidades</h4>
+    <hr>
+    <div class="form-row" style="display: flex; gap: 30px; align-items: center;">
+        <div class="form-group" style="flex: 1;">{{ form.crew_number.label }} {{ form.crew_number(class="form-control", type="number", step="1.0", placeholder="Ex: 10") }}</div>
+        <div class="form-group" style="flex: 1;">{{ form.passenger_number.label }} {{ form.passenger_number(class="form-control", type="number", step="1.0", placeholder="Ex: 100") }}</div>
+        <div class="form-group" style="flex: 1;">{{ form.extra_roll_number.label }} {{ form.extra_roll_number(class="form-control", type="number", step="1.0", placeholder="Ex: 5") }}</div>
+    </div>
+    
+    <h4><i class="fa-solid fa-file-csv"></i> Dados Geométricos</h4>
+    <hr>
+    <div class="form-group">
+        {{ form.tabela_cotas.label }}
+        {{ form.tabela_cotas(class="form-control") }}
+    </div>
+
+    <br>
+    {{ form.submit(class="btn") }}
+</form>
+{% endblock %}

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShipShape</title>
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<body class="{% block body_class %}{% endblock %}">
+    <main> 
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <script>
+                        Swal.fire({
+                            title: '{% if category == "success" %}Sucesso!{% elif category == "error" %}Erro!{% else %}Aviso!{% endif %}',
+                            text: '{{ message }}',
+                            icon: '{{ category }}',
+                            confirmButtonColor: '#0F665C'
+                        });
+                    </script>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+        
+    </main>
+
+    <div class="app-layout">
+        {% block app_layout_content %}
+            {% endblock %}
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,31 @@
+{% extends "app_base.html" %}
+
+{% block app_content %}
+    <h2><i class="fa-solid fa-user-circle"></i> Meu Perfil</h2>
+    <p>Aqui estão as informações da sua conta.</p>
+
+    <hr>
+
+    <div class="profile-details">
+        <p>
+            <strong>Nome de Usuário:</strong>
+            <span>{{ current_user.username }}</span>
+        </p>
+        <p>
+            <strong>E-mail:</strong>
+            <span>{{ current_user.email }}</span>
+        </p>
+        <p>
+            <strong>Empresa:</strong>
+            <span>{{ current_user.company }}</span>
+        </p>
+        <p>
+            <strong>Função:</strong>
+            <span>{{ current_user.job }}</span>
+        </p>
+        <p>
+            <strong>Segmento:</strong>
+            <span>{{ current_user.segment }}</span>
+        </p>
+    </div>
+{% endblock %}

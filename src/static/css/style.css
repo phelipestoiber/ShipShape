@@ -1,0 +1,149 @@
+/* =================================================================== */
+/* === ARQUIVO DE ESTILO PRINCIPAL - SHIPSHAPE ======================= */
+/* =================================================================== */
+
+/* --- 1. FONTES E VARIÁVEIS GLOBAIS (AS SUAS PREMISSAS) --- */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap');
+
+:root {
+    --font-main: 'Poppins', sans-serif;
+    
+    /* Sua nova paleta de cores */
+    --color-page-bg: #0a1e2e;
+    --color-card-bg: #f0f1e6;
+    --color-sidebar-bg: #134153;
+    --color-text-on-dark: #f0f1e6;
+    --color-text-on-light: #0a1e2e;
+    --color-special-link: #6fb190;
+    --color-border: #278572;
+    --color-primary-action: #187461; /* Cor primária que você usou anteriormente, ótima para botões */
+}
+
+/* --- 2. ESTILOS DE BASE E RESET --- */
+html {
+    height: 100%;
+}
+
+body {
+    font-family: var(--font-main);
+    margin: 0;
+    background-color: var(--color-page-bg);
+    color: var(--color-text-on-light); /* Cor de texto padrão para cards */
+}
+
+* {
+    box-sizing: border-box;
+}
+
+/* --- 3. ESTILOS PARA PÁGINAS DE AUTENTICAÇÃO (LOGIN/REGISTRO) --- */
+body.auth-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.auth-container {
+    background-color: var(--color-card-bg);
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px B10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    min-width: 650px; /* Largura mínima para ambos, como solicitado */
+    max-width: 700px;
+}
+
+.auth-title {
+    text-align: center;
+    color: var(--color-primary-action);
+    margin-top: 0;
+    margin-bottom: 30px;
+}
+
+/* Estilos de formulário compartilhados */
+.form-group { margin-bottom: 20px; }
+.form-group label { display: block; margin-bottom: 8px; font-weight: 500; }
+.form-group .auth-links { margin-top: 0; /* Remove a margem superior indesejada nesta situação específica */ }
+.form-control { width: 100%; padding: 10px; border: 1px solid var(--color-border); border-radius: 4px; font-family: var(--font-main); }
+.form-control:focus { border-color: var(--color-primary-action); outline: none; box-shadow: 0 0 5px rgba(24, 116, 97, 0.5); }
+.btn { width: 100%; padding: 12px; border: none; border-radius: 4px; background-color: var(--color-primary-action); color: white; font-size: 16px; font-weight: 700; cursor: pointer; transition: background-color 0.3s ease; }
+.btn:hover { background-color: #115748; }
+.auth-links { text-align: center; margin-top: 20px; }
+.auth-links a { color: var(--color-special-link); text-decoration: none; font-weight: 500; }
+.auth-links a:hover { text-decoration: underline; }
+.form-check { display: flex; align-items: center; /* Alinha a caixa e o texto verticalmente */ }
+.form-check label { margin-bottom: 0;/* Remove a margem inferior padrão da label dentro de um .form-check */ }
+
+/* --- 4. LAYOUT PRINCIPAL DA APLICAÇÃO --- */
+.app-layout { display: flex; }
+
+/* Sidebar */
+.sidebar {
+    width: 260px;
+    height: 100vh;
+    background-color: var(--color-sidebar-bg);
+    color: var(--color-text-on-dark);
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    transition: width 0.3s ease;
+}
+.sidebar-header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
+.sidebar-header h3 { margin: 0; font-size: 1.5rem; }
+.sidebar-nav { list-style: none; padding: 0; margin: 20px 0; flex-grow: 1; }
+.sidebar-nav li a { display: flex; align-items: center; padding: 15px 20px; color: var(--color-text-on-dark); text-decoration: none; font-weight: 500; transition: background-color 0.2s ease; }
+.sidebar-nav li a:hover { background-color: rgba(24, 116, 97, 0.5); }
+.sidebar-nav li a i { width: 30px; margin-right: 10px; font-size: 1.1rem; }
+.sidebar-nav .nav-divider { height: 1px; background-color: rgba(240, 241, 230, 0.2); margin: 10px 20px; }
+.sidebar-footer { padding: 20px; border-top: 1px solid rgba(240, 241, 230, 0.2); }
+.sidebar-footer a { display: flex; align-items: center; color: var(--color-text-on-dark); text-decoration: none; }
+.sidebar-toggle-btn { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--color-text-on-dark); }
+
+/* Conteúdo Principal */
+.main-content {
+    flex-grow: 1;
+    margin-left: 260px;
+    transition: margin-left 0.3s ease;
+}
+.content-wrapper { padding: 30px; /* Cria o espaçamento ao redor do conteúdo da página */ }
+.main-header { display: flex; align-items: center; justify-content: space-between; height: 70px; padding: 0 30px; background-color: var(--color-page-bg); border-bottom: 2px solid var(--color-border); }
+.page-title h2 { margin: 0; font-size: 1.8rem; color: var(--color-text-on-dark); }
+.header-brand h3 { margin: 0; font-size: 1.5rem; color: var(--color-text-on-dark); display: flex; align-items: center; }
+.header-brand i { margin-right: 10px; color: var(--color-primary-action); }
+.page-content { 
+    padding: 30px; 
+    background-color: var(--color-card-bg); /* Define o fundo claro do card */
+    color: var(--color-text-on-light);      /* Define o texto escuro para o conteúdo do card */
+    border-radius: 8px;                     /* Bônus: Adiciona bordas arredondadas para combinar com os cards de login */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); /* Bônus: Uma sombra sutil para dar profundidade */
+}
+
+/* Estilos para Sidebar Recolhida */
+.app-layout.sidebar-collapsed .sidebar { width: 80px; }
+.app-layout.sidebar-collapsed .main-content { margin-left: 80px; }
+.app-layout.sidebar-collapsed .sidebar-nav span,
+.app-layout.sidebar-collapsed .sidebar-footer span,
+.app-layout.sidebar-collapsed .sidebar-header h3 { display: none; }
+.app-layout.sidebar-collapsed .sidebar-nav a { justify-content: center; }
+
+/* --- 5. CURVAS HIDROSTATICAS --- */
+.hydro-grid-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Duas colunas */
+    grid-template-rows: auto auto auto; /* Três linhas */
+    grid-template-areas:
+        "a1 a2"
+        "b12 b12"
+        "c12 c12";
+    gap: 30px;
+}
+.quadrant-a1 { grid-area: a1; }
+.quadrant-a2 { grid-area: a2; }
+.quadrant-b12 { grid-area: b12; }
+.quadrant-c12 { grid-area: c12; }
+
+.calc-option { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.calc-option .form-control { flex-grow: 1; }
+

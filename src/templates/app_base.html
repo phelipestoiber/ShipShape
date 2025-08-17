@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ShipShape{% endblock %}</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body class="{% block body_class %}app-page{% endblock %}">
+
+    <div class="app-layout">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h3><span>ShipShape</span></h3>
+                <button id="sidebar-toggle" class="sidebar-toggle-btn">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+            
+            <ul class="sidebar-nav">
+                <li><a href="{{ url_for('user.profile') }}"><i class="fa-solid fa-user"></i><span>Perfil</span></a></li>
+                <li><a href="{{ url_for('vessel.add') }}"><i class="fa-solid fa-anchor"></i><span>Embarcações</span></a></li>
+                <li class="nav-divider"></li>
+                <li><a href="{{ url_for('hidrostatica.index') }}"><i class="fa-solid fa-water"></i><span>Curvas Hidrostáticas</span></a></li>
+                <li><a href="{{ url_for('cruzadas.index') }}"><i class="fa-solid fa-arrows-left-right-to-line"></i><span>Curvas Cruzadas</span></a></li>
+            </ul>
+
+            <div class="sidebar-footer">
+                <a href="{{ url_for('auth.logout') }}"><i class="fa-solid fa-right-from-bracket"></i><span>Sair</span></a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="main-header">
+                <div class="page-title">
+                    <h2>{% block page_title %}Dashboard{% endblock %}</h2>
+                </div>
+                <div class="header-brand">
+                    <h3><i class="fa-solid fa-ship"></i> <span>ShipShape</span></h3>
+                </div>
+            </header>
+
+            <div class="content-wrapper">
+                <div class="page-content">
+                    {% block app_content %}{% endblock %}
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <script>
+                    Swal.fire({
+                        title: '{% if category == "success" %}Sucesso!{% elif category == "error" or category == "danger" %}Erro!{% else %}Aviso!{% endif %}',
+                        text: '{{ message|tojson }}',
+                        icon: '{{ category }}',
+                        confirmButtonColor: '#0F665C'
+                    });
+                </script>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

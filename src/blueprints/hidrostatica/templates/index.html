@@ -1,0 +1,57 @@
+{% extends "app_base.html" %}
+
+{% block page_title %}
+    Cálculo de Curvas Hidrostáticas
+{% endblock %}
+
+{% block app_content %}
+<div class="hydro-grid-container">
+    
+    <div class="quadrant quadrant-a1">
+        <h4><i class="fa-solid fa-keyboard"></i> Parâmetros de Cálculo</h4>
+        <hr>
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+            
+            <div class="form-group">{{ form.vessel.label }} {{ form.vessel(class="form-control") }}</div>
+            <hr>
+            {% for subfield in form.calc_method %}
+                <div class="calc-option">
+                    {{ subfield }} {{ subfield.label }}
+                    {% if subfield.data == 'numero' %}
+                        {{ form.num_calados(class="form-control") }}
+                    {% elif subfield.data == 'incremento' %}
+                        {{ form.inc_calados(class="form-control", step="any") }}
+                    {% elif subfield.data == 'manual' %}
+                        {{ form.lista_calados(class="form-control", placeholder="Ex: 0.5; 1.0") }}
+                    {% endif %}
+                </div>
+            {% endfor %}
+            <hr>
+            <div class="form-row" style="display: flex; gap: 15px;">
+                <div class="form-group" style="flex:1;">{{ form.metodo_interp.label }} {{ form.metodo_interp(class="form-control") }}</div>
+                <div class="form-group" style="flex:1;">{{ form.densidade.label }} {{ form.densidade(class="form-control", step="any") }}</div>
+            </div>
+            <div class="form-group" style="margin-top: 20px;">
+                {{ form.submit(class="btn") }}
+            </div>
+        </form>
+    </div>
+
+    <div class="quadrant quadrant-a2">
+        <h4><i class="fa-solid fa-chart-line"></i> Gráfico de Curvas Hidrostáticas</h4>
+        <hr>
+        <div id="plot-container">
+            {% if plot_html %}
+                {{ plot_html | safe }}
+            {% else %}
+                <div class="placeholder">A visualização 3D aparecerá aqui após o cálculo.</div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="quadrant quadrant-b12 placeholder">B12: Tabela de Resultados</div>
+    <div class="quadrant quadrant-c12 placeholder">C12: Outras Informações</div>
+</div>
+
+{% endblock %}

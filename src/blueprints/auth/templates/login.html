@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block body_class %}auth-page{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <h2 class="auth-title">Acessar Plataforma</h2>
+    <form method="POST" action="">
+        {{ form.hidden_tag() }}
+
+        <div class="form-group">
+            {{ form.email.label }}
+            {{ form.email(class="form-control", placeholder="seuemail@exemplo.com") }}
+            {% for error in form.email.errors %}
+                <span class="error" style="color: red; font-size: 0.8em;">[{{ error }}]</span>
+            {% endfor %}
+        </div>
+        
+        <div class="form-group">
+            {{ form.password.label }}
+            {{ form.password(class="form-control", placeholder="Sua senha") }}
+            {% for error in form.password.errors %}
+                <span class="error" style="color: red; font-size: 0.8em;">[{{ error }}]</span>
+            {% endfor %}
+        </div>
+        
+        <div class="form-group" style="display: flex; justify-content: space-between; align-items: center; font-size: 0.9em;">
+            <div class="form-check">
+                {{ form.remember_me() }}
+                {{ form.remember_me.label(style="margin-left: 5px; font-weight: 400;") }}
+            </div>
+            <div class="auth-links">
+                <a href="#">Recuperar senha?</a>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            {{ form.submit(class="btn") }}
+        </div>
+    </form>
+    
+    <div class="auth-links" style="border-top: 1px solid #ccc; padding-top: 20px;">
+        <p>Novo por aqui? <a href="{{ url_for('auth.register') }}">Crie sua conta!</a></p>
+    </div>
+</div>
+{% endblock %}

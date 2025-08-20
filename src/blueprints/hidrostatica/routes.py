@@ -5,6 +5,7 @@ from flask_login import login_required, current_user
 from .forms import HydrostaticsCalculationForm
 from src.models import Vessel
 from src.core.interpolacao import Casco
+from src.core.calculos_hidrostaticos import PropriedadesHidrostaticas
 
 hidrostatica_bp = Blueprint('hidrostatica', __name__, template_folder='templates', url_prefix='/hidrostatica')
 
@@ -64,21 +65,37 @@ def index():
             casco = Casco(tabela_de_cotas_df, metodo=metodo_interp)
 
             plot_html = casco.plotar_casco_3d()
-            
-            # --- 6. EXECUTE UM TESTE DE CÁLCULO ---
-            # Vamos pegar a primeira baliza como exemplo para testar
-            if casco.posicoes_balizas:
-                primeira_baliza_x = casco.posicoes_balizas[0]
-                altura_teste_z = 2.105  # Use um valor Z que esteja dentro do seu casco
-                
-                meia_boca_calculada = casco.obter_meia_boca(primeira_baliza_x, altura_teste_z)
-                
-                print("\n--- TESTE DE INTERPOLAÇÃO ---")
-                print(f"  Calculando meia-boca para a baliza X={primeira_baliza_x} na altura Z={altura_teste_z}")
-                print(f"  Resultado: Y = {meia_boca_calculada:.4f} m")
-                print("-----------------------------\n")
 
-            flash(f"Geometria de '{selected_vessel.name}' processada com sucesso!", 'success')
+            calado_de_teste = 2.31
+            densidade = form.densidade.data
+            
+            print(f"\nInstanciando PropriedadesHidrostaticas para T = {calado_de_teste} m...")
+            
+            # Cria o objeto, que automaticamente executa os cálculos no __init__
+            props_hidrostaticas = PropriedadesHidrostaticas(casco, calado_de_teste, densidade, metodo_interp)
+            
+            print("\n--- RESULTADO DO CÁLCULO DE ÁREAS DAS SEÇÕES ---")
+            # Imprime o dicionário de áreas que foi calculado
+            for baliza, area in props_hidrostaticas.areas_secoes.items():
+                print(f"  Área da Baliza em X={baliza:<7.4f} m  =  {area:.4f} m²")
+            print("---------------------------------------------------\n")
+
+            # ----------------------------------------
+
+            print("\n--- RESULTADO DO CÁLCULO DE DIMENSÕES DA LINHA D'ÁGUA ---")
+            
+            print(f"  Posição de Ré (Xre):   {props_hidrostaticas.x_re:.4f} m")
+            print(f"  Posição de Vante (Xvante): {props_hidrostaticas.x_vante:.4f} m")
+            print(f"  LWL:                    {props_hidrostaticas.lwl:.4f} m")
+            print(f"  BWL:                    {props_hidrostaticas.bwl:.4f} m")
+            print("----------------------------------------------------------\n")
+
+            # ----------------------------------------
+
+            print("\n--- RESULTADO DO CÁLCULO DA ÁREA DO PLANO DE FLUTUAÇÃO ---")
+            print(f"  Área do Plano de Flutuação (AWP): {props_hidrostaticas.area_plano_flutuacao:.4f} m²")
+            print("-----------------------------------------------------------\n")
+            # ----------------------------------------
             
         except Exception as e:
             print(f"!!! OCORREU UM ERRO INESPERADO: {e} !!!")

@@ -19,9 +19,9 @@
                 <div class="calc-option">
                     {{ subfield }} {{ subfield.label }}
                     {% if subfield.data == 'numero' %}
-                        {{ form.num_calados(class="form-control") }}
+                        {{ form.num_calados(class="form-control", step='1.0', placeholder="Ex: 15.0") }}
                     {% elif subfield.data == 'incremento' %}
-                        {{ form.inc_calados(class="form-control", step="any") }}
+                        {{ form.inc_calados(class="form-control", step="any", placeholder="Ex: 0.5") }}
                     {% elif subfield.data == 'manual' %}
                         {{ form.lista_calados(class="form-control", placeholder="Ex: 0.5; 1.0") }}
                     {% endif %}

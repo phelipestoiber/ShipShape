@@ -55,4 +55,21 @@ document.addEventListener('DOMContentLoaded', function() {
         updateInputsState();
     }
 
+    // ===============================================
+    // === LÓGICA DA TABELA DE RESULTADOS (DATATABLES)
+    // ===============================================
+    
+    // Procura por uma tabela com o ID que definimos
+    if ($('#tabela-resultados').length) {
+        console.log("Tabela de resultados encontrada. Inicializando DataTables.");
+        
+        // Ativa o DataTables na nossa tabela
+        $('#tabela-resultados').DataTable({
+            "pageLength": 10, // Define o número de linhas por página
+            "searching": false, // Desabilita barra de busca
+            "language": {     // Traduz a interface para o português
+                "url": "https://cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json"
+            }
+        });
+    }
 });

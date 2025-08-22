@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, FloatField, SelectField, SubmitField, IntegerField, RadioField
-from wtforms.validators import DataRequired, Optional, ValidationError
+from wtforms.validators import DataRequired, Optional, ValidationError, NumberRange, InputRequired
 
 class HydrostaticsCalculationForm(FlaskForm):
     """Formulário para executar um cálculo hidrostático."""
@@ -19,6 +19,9 @@ class HydrostaticsCalculationForm(FlaskForm):
         default='numero',
         validators=[DataRequired()]
     )
+
+    calado_min = FloatField('Calado Mínimo (m)', validators=[InputRequired("Campo obrigatório."), NumberRange(min=0, message="O valor deve ser maior ou igual a 0.")])
+    calado_max = FloatField('Calado Máximo (m)', validators=[InputRequired("Campo obrigatório."), NumberRange(min=0, message="O valor deve ser maior ou igual a 0.")])
 
     # Campos de entrada para cada método
     num_calados = IntegerField("Número de Calados", validators=[Optional()])
@@ -41,6 +44,13 @@ class HydrostaticsCalculationForm(FlaskForm):
         # Primeiro, roda as validações padrão
         if not super(HydrostaticsCalculationForm, self).validate(extra_validators):
             return False
+        
+        # --- Garante que calado_max > calado_min ---
+        if self.calado_max.data is not None and self.calado_min.data is not None:
+            if self.calado_max.data <= self.calado_min.data:
+                # Adiciona uma mensagem de erro especificamente ao campo calado_max
+                self.calado_max.errors.append('O calado máximo deve ser maior que o calado mínimo.')
+                return False # Interrompe a validação
 
         # Agora, a lógica condicional
         method = self.calc_method.data

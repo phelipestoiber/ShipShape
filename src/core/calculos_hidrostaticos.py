@@ -564,13 +564,13 @@ def calcular_propriedades_para_um_calado(args):
     
     # Retorna um dicionário com os resultados
     return {
-        'Calado (T)': calado,
-        'Volume (∇)': props.volume, 'Desloc. (Δ)': props.deslocamento,
-        'AWP': props.area_plano_flutuacao, 'LWL': props.lwl, 'BWL': props.bwl,
-        'LCB': props.lcb, 'VCB (KB)': props.vcb, 'LCF': props.lcf,
-        'IT': props.momento_inercia_transversal, 'IL': props.momento_inercia_longitudinal,
-        'BMt': props.bmt, 'KMt': props.kmt, 'BMl': props.bml, 'KMl': props.kml,
-        'TPC': props.tpc, 'MTc': props.mtc, 'Cb': props.cb, 'Cp': props.cp,
+        'Calado (m)': calado,
+        'Volume (m³)': props.volume, 'Desloc. (t)': props.deslocamento,
+        'AWP (m²)': props.area_plano_flutuacao, 'LWL (m)': props.lwl, 'BWL (m)': props.bwl,
+        'LCB (m)': props.lcb, 'VCB (m)': props.vcb, 'LCF (m)': props.lcf,
+        # 'IT (kg·m²)': props.momento_inercia_transversal, 'IL (kg·m²)': props.momento_inercia_longitudinal,
+        'BMt (m)': props.bmt, 'KMt (m)': props.kmt, 'BMl (m)': props.bml, 'KMl (m)': props.kml,
+        'TPC (t/cm)': props.tpc, 'MTc (t·m/cm)': props.mtc, 'Cb': props.cb, 'Cp': props.cp,
         'Cwp': props.cwp, 'Cm': props.cm,
     }
 
@@ -621,7 +621,7 @@ class CalculadoraHidrostatica:
         
         print(f"\nIniciando cálculo PARALELO das curvas para {len(lista_de_calados)} calados...")
         
-        tarefas = [(self.casco, calado, self.densidade, self.metodo_interp) for calado in sorted(lista_de_calados) if calado > 0]
+        tarefas = [(self.casco, calado, self.densidade, self.metodo_interp) for calado in sorted(lista_de_calados) if calado >= 0]
         lista_de_resultados = []
 
         with concurrent.futures.ProcessPoolExecutor() as executor:
@@ -631,5 +631,5 @@ class CalculadoraHidrostatica:
         duration = end_time - start_time
         print(f"Cálculo paralelo finalizado em {duration:.2f} segundos.")
         
-        lista_de_resultados.sort(key=lambda r: r['Calado (T)'])
+        lista_de_resultados.sort(key=lambda r: r['Calado (m)'])
         return pd.DataFrame(lista_de_resultados)

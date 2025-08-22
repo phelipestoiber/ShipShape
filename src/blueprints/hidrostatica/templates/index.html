@@ -6,7 +6,6 @@
 
 {% block app_content %}
 <div class="hydro-grid-container">
-    
     <div class="quadrant quadrant-a1">
         <h4><i class="fa-solid fa-keyboard"></i> Parâmetros de Cálculo</h4>
         <hr>
@@ -14,16 +13,21 @@
             {{ form.hidden_tag() }}
             
             <div class="form-group">{{ form.vessel.label }} {{ form.vessel(class="form-control") }}</div>
+
+            <div class="form-row" style="display: flex; gap: 15px;">
+                <div class="form-group" style="flex:1;">{{ form.calado_min.label }} {{ form.calado_min(class="form-control", step="any", placeholder="Ex: 0.0") }}</div>
+                <div class="form-group" style="flex:1;">{{ form.calado_max.label }} {{ form.calado_max(class="form-control", step="any", placeholder="Ex: 4.0") }}</div>
+            </div>
             <hr>
             {% for subfield in form.calc_method %}
                 <div class="calc-option">
                     {{ subfield }} {{ subfield.label }}
                     {% if subfield.data == 'numero' %}
-                        {{ form.num_calados(class="form-control", step='1.0', placeholder="Ex: 15.0") }}
+                        {{ form.num_calados(class="form-control", step="1.0", placeholder="Ex: 15.0") }}
                     {% elif subfield.data == 'incremento' %}
                         {{ form.inc_calados(class="form-control", step="any", placeholder="Ex: 0.5") }}
                     {% elif subfield.data == 'manual' %}
-                        {{ form.lista_calados(class="form-control", placeholder="Ex: 0.5; 1.0") }}
+                        {{ form.lista_calados(class="form-control", placeholder="Ex: 0.5; 1.0; 1.5; 2.0") }}
                     {% endif %}
                 </div>
             {% endfor %}
@@ -50,8 +54,31 @@
         </div>
     </div>
 
-    <div class="quadrant quadrant-b12 placeholder">B12: Tabela de Resultados</div>
-    <div class="quadrant quadrant-c12 placeholder">C12: Outras Informações</div>
+    </div>
+        <div class="quadrant quadrant-c12">
+        <h4><i class="fa-solid fa-chart-area"></i> Curvas Hidrostáticas</h4>
+        <hr>
+        {% if curvas_plot_html %}
+            <div id="curvas-plot-container">
+                {{ curvas_plot_html | safe }}
+            </div>
+        {% else %}
+            <div class="placeholder">As curvas hidrostáticas aparecerão aqui.</div>
+        {% endif %}
+    </div>
+
+    <div class="quadrant quadrant-b12">
+        <h4><i class="fa-solid fa-table"></i> Tabela de Resultados</h4>
+        <hr>
+        {% if resultados_html %}
+            <div class="table-responsive">
+                {{ resultados_html | safe }}
+            </div>
+        {% else %}
+            <div class="placeholder">A tabela de resultados aparecerá aqui.</div>
+        {% endif %}
+
+
 </div>
 
 {% endblock %}

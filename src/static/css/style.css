@@ -147,3 +147,40 @@ body.auth-page {
 .calc-option { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
 .calc-option .form-control { flex-grow: 1; }
 
+/* --- 6. Estilos para Tabelas de Resultados --- */
+
+.table-responsive {
+    width: 100%;
+    overflow-x: auto; /* Adiciona rolagem horizontal se a tabela for muito larga */
+    flex-grow: 1; /* Faz o container crescer para preencher o quadrante */
+}
+
+table.table {
+    width: 100%;
+    border-collapse: collapse; /* Remove o espaçamento entre as células */
+    font-size: 0.9em;
+}
+
+table.table th, 
+table.table td {
+    padding: 8px 12px;
+    border: 1px solid #ddd; /* Linhas de grade sutis */
+    text-align: right; /* Alinha os números à direita */
+}
+
+table.table th {
+    background-color: var(--color-sidebar-bg); /* Usa a cor da sidebar para o cabeçalho */
+    color: var(--color-text-on-dark);
+    font-weight: 600;
+    text-align: center;
+}
+
+/* Efeito "zebrado" nas linhas */
+table.table-striped tbody tr:nth-child(odd) {
+    background-color: #f9f9f9;
+}
+
+/* Efeito de destaque ao passar o mouse */
+table.table-hover tbody tr:hover {
+    background-color: #e2e2e2;
+}

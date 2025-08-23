@@ -7,7 +7,6 @@ from .forms import HydrostaticsCalculationForm
 from src.models import Vessel
 from src.core.interpolacao import Casco
 from src.core.calculos_hidrostaticos import CalculadoraHidrostatica
-# from src.core.visualizacao import plotar_curvas_hidrostaticas
 from src.core.visualizacao import gerar_grafico_hidrostatico
 
 hidrostatica_bp = Blueprint('hidrostatica', __name__, template_folder='templates', url_prefix='/hidrostatica')
@@ -24,7 +23,6 @@ def index():
     
     plot_html = None
     resultados_df = None
-    curvas_plot_html = None
     resultados_html = None
     
     if form.validate_on_submit():

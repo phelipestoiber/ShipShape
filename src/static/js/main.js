@@ -72,4 +72,29 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
+    // ==========================================================
+    // === LÓGICA DE FEEDBACK DE CARREGAMENTO (LOADING) =======
+    // ==========================================================
+
+    // Tenta encontrar o formulário de cálculo pelo ID que adicionamos
+    const hydroForm = document.getElementById('calculation-form');
+
+    if (hydroForm) {
+        // Adiciona um "escutador" para o evento de SUBMISSÃO do formulário
+        hydroForm.addEventListener('submit', function() {
+            // Quando o formulário for enviado, exibe o pop-up de carregamento
+            Swal.fire({
+                title: 'Calculando...',
+                html: 'Por favor, aguarde enquanto os resultados são processados.',
+                // Impede que o usuário feche o pop-up clicando fora
+                allowOutsideClick: false, 
+                // Mostra a animação de "carregando"
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+        });
+    }
+
 });

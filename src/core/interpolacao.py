@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 from scipy.interpolate import PchipInterpolator, interp1d
 
@@ -69,3 +70,27 @@ class Casco:
                 self.funcao_perfil = interp1d(dados_perfil['X'], dados_perfil['Z_min'], kind='linear', bounds_error=False, fill_value=0)
             else:
                 self.funcao_perfil = PchipInterpolator(dados_perfil['X'], dados_perfil['Z_min'], extrapolate=False)
+
+
+    def obter_meia_boca(self, x_baliza: float, z: float) -> float:
+        """
+        Calcula a meia-boca (valor Y) para uma dada baliza (X) e altura (Z).
+
+        Args:
+            x_baliza (float): A posição longitudinal (coordenada X) da baliza.
+            z (float): A altura (coordenada Z) na qual se deseja a meia-boca.
+
+        Returns:
+            float: O valor da meia-boca (Y). Retorna 0 se a baliza não existir 
+                   ou se a altura Z estiver fora do range definido.
+        """
+        funcao_interpoladora = self.funcoes_baliza.get(x_baliza)
+        
+        if funcao_interpoladora:
+            # Usa a função de interpolação para encontrar Y no ponto Z
+            meia_boca = funcao_interpoladora(z)
+            # Retorna 0 se o resultado for NaN (ocorre com extrapolate=False)
+            return np.nan_to_num(meia_boca)
+        else:
+            # Se a baliza exata não existir no dicionário, retorna 0
+            return 0.0

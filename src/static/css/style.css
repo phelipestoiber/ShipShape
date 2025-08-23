@@ -132,17 +132,18 @@ body.auth-page {
 .hydro-grid-container {
     display: grid;
     grid-template-columns: 1fr 1fr; /* Duas colunas */
-    grid-template-rows: auto auto auto; /* Três linhas */
+    grid-template-rows: auto auto; /* Três linhas */
     grid-template-areas:
         "a1 a2"
-        "b12 b12"
-        "c12 c12";
-    gap: 30px;
+        "b12 b12";
+        /* "c12 c12"; */
+    /* gap: 30px; */
+    
 }
 .quadrant-a1 { grid-area: a1; }
 .quadrant-a2 { grid-area: a2; }
 .quadrant-b12 { grid-area: b12; }
-.quadrant-c12 { grid-area: c12; }
+/* .quadrant-c12 { grid-area: c12; } */
 
 .calc-option { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
 .calc-option .form-control { flex-grow: 1; }

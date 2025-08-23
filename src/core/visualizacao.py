@@ -95,15 +95,10 @@ def gerar_grafico_hidrostatico(df_resultados: pd.DataFrame, casco: Casco) -> str
         )],
         title="Visualizador de Curvas e Geometria",
         paper_bgcolor="#f0f1e6",
+        height=560,
     )
 
-    # Define a CENA 3D (para quando os traços 3D estiverem visíveis)
-    dbg3d = dict(
-        showbackground = True, 
-        backgroundcolor ="rgb(200, 200, 230)", 
-        gridcolor = "rgb(200, 200, 230)",  
-        zeroline = False)
-    
+    # Define a CENA 3D (para quando os traços 3D estiverem visíveis)    
     fig.update_layout(
         scene=dict(
             aspectmode='data', 
@@ -112,7 +107,7 @@ def gerar_grafico_hidrostatico(df_resultados: pd.DataFrame, casco: Casco) -> str
             zaxis_title='Altura (Z)',
             ),
         template='plotly_white',
-        margin=dict(t=10, b=10, l=10, r=10),
+        margin=dict(t=0, b=0, l=70, r=00),
     )
     
     # Ativa a primeira opção ("Casco 3D") por padrão

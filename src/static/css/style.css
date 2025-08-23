@@ -131,14 +131,11 @@ body.auth-page {
 /* --- 5. CURVAS HIDROSTATICAS --- */
 .hydro-grid-container {
     display: grid;
-    grid-template-columns: 1fr 1fr; /* Duas colunas */
-    grid-template-rows: auto auto; /* Três linhas */
+    grid-template-columns: 0.4fr 0.6fr;
+    grid-template-rows: auto auto;
     grid-template-areas:
         "a1 a2"
-        "b12 b12";
-        /* "c12 c12"; */
-    /* gap: 30px; */
-    
+        "b12 b12";    
 }
 .quadrant-a1 { grid-area: a1; }
 .quadrant-a2 { grid-area: a2; }

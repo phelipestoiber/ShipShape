@@ -7,7 +7,8 @@ from .forms import HydrostaticsCalculationForm
 from src.models import Vessel
 from src.core.interpolacao import Casco
 from src.core.calculos_hidrostaticos import CalculadoraHidrostatica
-from src.core.visualizacao import plotar_curvas_hidrostaticas
+# from src.core.visualizacao import plotar_curvas_hidrostaticas
+from src.core.visualizacao import gerar_grafico_hidrostatico
 
 hidrostatica_bp = Blueprint('hidrostatica', __name__, template_folder='templates', url_prefix='/hidrostatica')
 
@@ -42,7 +43,7 @@ def index():
             filepath = os.path.join(current_app.root_path, '..', 'uploads', selected_vessel.tabela_cotas_filename)
             tabela_de_cotas_df = pd.read_csv(filepath, header=None, names=['X', 'Y', 'Z'])
             casco = Casco(tabela_de_cotas_df, metodo=metodo_interp)
-            plot_html = casco.plotar_casco_3d()
+            # plot_html = casco.plotar_casco_3d()
 
             # --- 2. GERAÇÃO DA LISTA DE CALADOS A CALCULAR ---
             lista_de_calados_a_calcular = []
@@ -86,7 +87,7 @@ def index():
                         table_id='tabela-resultados'
                     )
 
-                    curvas_plot_html = plotar_curvas_hidrostaticas(resultados_df)
+                    plot_html = gerar_grafico_hidrostatico(resultados_df, casco)
 
                 flash(f"Cálculos para '{selected_vessel.name}' concluídos!", 'success')
             else:
@@ -103,4 +104,4 @@ def index():
                 # E cria um pop-up de erro para cada um
                 flash(error, category='error')
             
-    return render_template('index.html', form=form, plot_html=plot_html, resultados_html=resultados_html, curvas_plot_html=curvas_plot_html)
+    return render_template('index.html', form=form, plot_html=plot_html, resultados_html=resultados_html)

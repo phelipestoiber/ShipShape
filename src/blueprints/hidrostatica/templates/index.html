@@ -6,6 +6,7 @@
 
 {% block app_content %}
 <div class="hydro-grid-container">
+    
     <div class="quadrant quadrant-a1">
         <h4><i class="fa-solid fa-keyboard"></i> Parâmetros de Cálculo</h4>
         <hr>
@@ -43,28 +44,15 @@
     </div>
 
     <div class="quadrant quadrant-a2">
-        <h4><i class="fa-solid fa-chart-line"></i> Gráfico de Curvas Hidrostáticas</h4>
+        <h4><i class="fa-solid fa-cube"></i> Visualização 3D do Casco</h4>
         <hr>
         <div id="plot-container">
             {% if plot_html %}
                 {{ plot_html | safe }}
             {% else %}
-                <div class="placeholder">A visualização 3D aparecerá aqui após o cálculo.</div>
+                <div class="placeholder">A visualização aparecerá aqui após o cálculo.</div>
             {% endif %}
         </div>
-    </div>
-
-    </div>
-        <div class="quadrant quadrant-c12">
-        <h4><i class="fa-solid fa-chart-area"></i> Curvas Hidrostáticas</h4>
-        <hr>
-        {% if curvas_plot_html %}
-            <div id="curvas-plot-container">
-                {{ curvas_plot_html | safe }}
-            </div>
-        {% else %}
-            <div class="placeholder">As curvas hidrostáticas aparecerão aqui.</div>
-        {% endif %}
     </div>
 
     <div class="quadrant quadrant-b12">
@@ -77,8 +65,7 @@
         {% else %}
             <div class="placeholder">A tabela de resultados aparecerá aqui.</div>
         {% endif %}
+    </div>
 
-
-</div>
-
+</div> 
 {% endblock %}

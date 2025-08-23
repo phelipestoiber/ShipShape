@@ -143,68 +143,77 @@ class Casco:
     
     def plotar_casco_3d(self) -> str:
         """
-        Gera um gráfico interativo 3D do casco (balizas e perfil) usando o Plotly.
+        Gera um gráfico 3D mostrando os pontos originais do CSV e
+        as curvas interpoladas do casco e do perfil.
         """
-        print("-> Gerando gráfico 3D do casco com Plotly (método robusto)...")
+        print("-> Gerando gráfico 3D (pontos + interpoladores)...")
         
-        # --- Prepara os dados para as Balizas ---
-        all_x_balizas, all_y_balizas, all_z_balizas = [], [], []
-        for x_val in self.posicoes_balizas:
-            df_baliza = self.df[self.df['X'] == x_val].sort_values('Z')
-            
-            if not df_baliza.empty:
-                # Adiciona os pontos do lado direito (estibordo)
-                all_x_balizas.extend([x_val] * len(df_baliza))
-                all_y_balizas.extend(df_baliza['Y'])
-                all_z_balizas.extend(df_baliza['Z'])
-                # Adiciona um 'None' para dizer ao Plotly para "levantar o lápis"
-                all_x_balizas.append(None)
-                all_y_balizas.append(None)
-                all_z_balizas.append(None)
-
-                # Adiciona os pontos do lado esquerdo (bombordo)
-                all_x_balizas.extend([x_val] * len(df_baliza))
-                all_y_balizas.extend(-df_baliza['Y']) # Y espelhado
-                all_z_balizas.extend(df_baliza['Z'])
-                all_x_balizas.append(None)
-                all_y_balizas.append(None)
-                all_z_balizas.append(None)
-
-        # Cria o traço com todos os pontos das balizas
-        trace_balizas = go.Scatter3d(
-            x=all_x_balizas, y=all_y_balizas, z=all_z_balizas,
-            mode='lines',
-            line=dict(color='green', width=2),
-            name='Balizas'
+        # --- 1. Preparar os dados dos PONTOS originais ---
+        df_sem_centro = self.df[self.df['Y'] > 0]
+        # Combina pontos de estibordo e bombordo
+        pontos_x = list(pd.concat([self.df['X'], df_sem_centro['X']]))
+        pontos_y = list(pd.concat([self.df['Y'], -df_sem_centro['Y']]))
+        pontos_z = list(pd.concat([self.df['Z'], df_sem_centro['Z']]))
+        
+        # Cria o traço para a nuvem de pontos
+        trace_pontos = go.Scatter3d(
+            x=pontos_x, y=pontos_y, z=pontos_z,
+            mode='markers',
+            marker=dict(size=2, color='green'), # Pontos verdes
+            name='Pontos do CSV'
         )
 
-        data_traces = [trace_balizas]
+        # --- 2. Preparar os traços das LINHAS interpoladas ---
+        
+        # Lista para guardar todos os traços de linhas
+        traces_linhas = []
+        
+        # Linhas das Balizas
+        for x_val in self.posicoes_balizas:
+            interpolador = self.funcoes_baliza.get(x_val)
+            if interpolador:
+                z_coords_orig = self.df[self.df['X'] == x_val]['Z']
+                z_interp = np.linspace(z_coords_orig.min(), z_coords_orig.max(), 50)
+                y_interp = interpolador(z_interp)
+                
+                nome_da_legenda = f'Baliza {x_val:.2f}'
+                
+                # Linha de estibordo (direita)
+                traces_linhas.append(go.Scatter3d(
+                    x=[x_val] * 50, y=list(y_interp), z=list(z_interp),
+                    mode='lines', line=dict(color='green', width=3),
+                    name=nome_da_legenda,
+                    legendgroup=nome_da_legenda
+                ))
+                # Linha de bombordo (esquerda)
+                traces_linhas.append(go.Scatter3d(
+                    x=[x_val] * 50, y=list(-y_interp), z=list(z_interp),
+                    mode='lines', line=dict(color='green', width=3),
+                    showlegend=False,
+                    legendgroup=nome_da_legenda
+                ))
+        
+        # Linha do Perfil da Quilha
+        if self.funcao_perfil:
+            x_interp = list(np.linspace(min(self.posicoes_balizas), max(self.posicoes_balizas), 100))
+            z_interp = list(self.funcao_perfil(x_interp))
+            traces_linhas.append(go.Scatter3d(
+                x=x_interp, y=[0] * len(x_interp), z=z_interp,
+                mode='lines', line=dict(color='royalblue', width=3),
+                name='Perfil da Quilha'
+            ))
 
-        # --- Prepara os dados para o Perfil da Quilha ---
-        # if self.funcao_perfil:
-        #     x_interp = np.linspace(min(self.posicoes_balizas), max(self.posicoes_balizas), 50)
-        #     z_interp = self.funcao_perfil(x_interp)
-        #     trace_perfil = go.Scatter3d(
-        #         x=x_interp, y=[0] * len(x_interp), z=z_interp,
-        #         mode='lines',
-        #         line=dict(color='black', width=5),
-        #         name='Perfil da Quilha'
-        #     )
-        #     # Lista de todos os traços a serem plotados
-        #     data_traces = [trace_balizas, trace_perfil]
-        # else:
-        #     data_traces = [trace_balizas]
-
-        # --- Cria a Figura com todos os dados de uma vez ---
-        fig = go.Figure(data=data_traces)
+        # --- 3. Cria a Figura com todos os traços ---
+        # A ordem é importante: desenha os pontos primeiro, depois as linhas por cima
+        fig = go.Figure(data=[trace_pontos] + traces_linhas)
 
         # Configura o layout da cena 3D
         fig.update_layout(
-            title_text='Visualização 3D do Casco',
+            title_text='Visualização 3D do Casco (Pontos e Curvas)',
             scene=dict(
                 xaxis_title='Comprimento (X)',
                 yaxis_title='Boca (Y)',
-                zaxis_title='Pontal (Z)',
+                zaxis_title='Altura (Z)',
                 aspectmode='data'
             ),
             margin=dict(l=0, r=0, b=0, t=40)

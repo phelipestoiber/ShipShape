@@ -1,188 +1,122 @@
 import pandas as pd
 import plotly.graph_objects as go
+import numpy as np
+from .interpolacao import Casco 
 
-# def plotar_curvas_hidrostaticas(df: pd.DataFrame) -> str:
-#     """
-#     Gera um gráfico 2D interativo com um DropDown para selecionar
-#     qual curva hidrostática exibir.
-
-#     Args:
-#         df (pd.DataFrame): A tabela de resultados (DataFrame) dos cálculos.
-
-#     Returns:
-#         str: Uma string contendo o HTML/JS do gráfico Plotly.
-#     """
-
-#     # ===============================================================
-#     # === MODO DE DEPURAÇÃO: Alterne para False para usar dados reais ===
-#     DEBUG_MODE = False 
-#     # ===============================================================
-
-#     if DEBUG_MODE:
-#         print("--- MODO DE DEPURAÇÃO ATIVADO: Gerando gráfico com dados de exemplo. ---")
-#         fig = go.Figure()
-#         fig.add_trace(go.Scatter(
-#             x=[1, 2, 3, 4, 5, 6], 
-#             y=[10, 11, 12, 13, 14, 15],
-#             mode='lines+markers',
-#             name='Teste de Dados'
-#         ))
-#         fig.update_layout(
-#             title="Gráfico de Teste com Dados de Exemplo",
-#             xaxis_title="Eixo X de Teste",
-#             yaxis_title="Eixo Y de Teste"
-#         )
-#         return fig.to_html(full_html=False, include_plotlyjs=False)
-    
-#     # --- DEBUGGER: Inspecionando os dados recebidos ---
-#     print("\n--- INICIANDO DEPURAÇÃO: plotar_curvas_hidrostaticas ---")
-#     print("Colunas REAIS recebidas no DataFrame:")
-#     print(df.columns.tolist())
-#     print("----------------------------------------------------------")
-#     # ---------------------------------------------------
-
-#     if df is None or df.empty:
-#         return "<div class='placeholder'>Dados insuficientes para gerar o gráfico.</div>"
-
-#     print("-> Gerando gráfico de curvas hidrostáticas...")
-#     fig = go.Figure()
-
-#     # Colunas que queremos plotar
-#     colunas_plotaveis = [
-#         'Volume (m³)', 'Desloc. (t)', 'AWP (m²)', 'LWL (m)', 'BWL (m)', 
-#         'LCB (m)', 'VCB (m)', 'LCF (m)', 'BMt (m)', 'KMt (m)', 
-#         'BMl (m)', 'KMl (m)', 'TPC (t/cm)', 'MTc (t·m/cm)',
-#         'Cb', 'Cp', 'Cwp', 'Cm'
-#     ]
-
-#     eixo_y_coluna = 'Calado (m)'
-
-#     # --- DEBUGGER: Verificando a coluna do eixo Y ---
-#     if eixo_y_coluna not in df.columns:
-#         print(f"!!! ERRO CRÍTICO: A coluna do eixo Y '{eixo_y_coluna}' não foi encontrada no DataFrame. !!!")
-#         return "<div class='placeholder'>Erro: Coluna de Calado não encontrada.</div>"
-#     # -----------------------------------------------
-
-#     # 1. Adiciona um traço (uma linha) para cada propriedade
-#     for i, coluna in enumerate(colunas_plotaveis):
-#         if coluna in df.columns:
-#             fig.add_trace(
-#                 go.Scatter(
-#                     x=df[coluna],
-#                     y=df[eixo_y_coluna],
-#                     name=coluna,
-#                     # Deixa apenas a primeira curva visível por padrão
-#                     visible=(i == 0)
-#                 )
-#             )
-#         else:
-#             # --- DEBUGGER: Avisa se uma coluna não for encontrada ---
-#             print(f"-> AVISO: A coluna '{coluna}' não foi encontrada no DataFrame e será pulada.")
-#             # ----------------------------------------------------
-
-
-#     # 2. Cria os botões para o DropDown
-#     botoes = []
-#     for i, coluna in enumerate(colunas_plotaveis):
-#         # Cria uma lista de 'visibilidade' (ex: [True, False, False, ...])
-#         visibilidade = [False] * len(colunas_plotaveis)
-#         visibilidade[i] = True # Torna apenas a curva atual visível
-        
-#         botoes.append(
-#             dict(
-#                 method='restyle',
-#                 label=coluna,
-#                 args=[{'visible': visibilidade},
-#                       {'xaxis.title': coluna}] # Atualiza o título do eixo X
-#             )
-#         )
-
-#     # 3. Adiciona o menu DropDown ao layout do gráfico
-#     fig.update_layout(
-#         updatemenus=[
-#             dict(
-#                 active=0, # O primeiro botão é o ativo
-#                 buttons=botoes,
-#                 direction="down",
-#                 pad={"r": 10, "t": 10},
-#                 showactive=True,
-#                 x=0.01,
-#                 xanchor="left",
-#                 y=1.15,
-#                 yanchor="top"
-#             )
-#         ],
-#         title="Curvas Hidrostáticas",
-#         xaxis_title=colunas_plotaveis[0], # Título inicial do eixo X
-#         yaxis_title=eixo_y_coluna
-#     )
-    
-#     print("-> Gráfico de curvas gerado.")
-#     return fig.to_html(full_html=False, include_plotlyjs=False)
-
-def plotar_curvas_hidrostaticas(df: pd.DataFrame) -> str:
+def gerar_grafico_hidrostatico(df_resultados: pd.DataFrame, casco: Casco) -> str:
     """
-    Gera um gráfico 2D interativo com um DropDown (versão final e robusta).
+    Gera um gráfico interativo com um DropDown para alternar entre a visualização
+    3D do casco e as curvas hidrostáticas 2D.
     """
-    if df is None or df.empty:
-        return "<div class='placeholder'>Dados insuficientes para gerar o gráfico.</div>"
-
     fig = go.Figure()
-
-    # Lista de colunas a serem plotadas, na ordem desejada
-    colunas_plotaveis = [
-        'Volume (m³)', 'Desloc. (t)', 'AWP (m²)', 'LWL (m)', 'BWL (m)', 'LCB (m)', 
-        'VCB (m)', 'LCF (m)', 'BMt (m)', 'KMt (m)', 'BMl (m)', 'KMl (m)', 
-        'TPC (t/cm)', 'MTc (t·m/cm)', 'Cb', 'Cp', 'Cwp', 'Cm'
-    ]
-    # Eixo Y sempre será o calado
-    eixo_y_coluna = 'Calado (m)'
-
-    if eixo_y_coluna not in df.columns:
-        return f"<div class='placeholder'>Erro: Coluna de Calado '{eixo_y_coluna}' não foi encontrada.</div>"
-
-    # 1. Adiciona todos os traços que existem no DataFrame
-    # Apenas o primeiro que for adicionado com sucesso ficará visível
-    primeiro_visivel_adicionado = False
-    for coluna in colunas_plotaveis:
-        if coluna in df.columns:
-            visible_status = False
-            if not primeiro_visivel_adicionado:
-                visible_status = True
-                primeiro_visivel_adicionado = True
+    
+    # --- Passo 1: Criar TODOS os traços ---
+    
+    # Traços para o CASCO 3D (com legendgroup)
+    traces_3d = []
+    # Pontos
+    df_sem_centro = casco.df[casco.df['Y'] > 0]
+    pontos_x = list(pd.concat([casco.df['X'], df_sem_centro['X']]))
+    pontos_y = list(pd.concat([casco.df['Y'], -df_sem_centro['Y']]))
+    pontos_z = list(pd.concat([casco.df['Z'], df_sem_centro['Z']]))
+    traces_3d.append(go.Scatter3d(x=pontos_x, y=pontos_y, z=pontos_z, mode='markers', marker=dict(size=2, color='green'), name='Pontos CSV', visible=False))
+    # Linhas Balizas 3D
+    for x_val in casco.posicoes_balizas:
+        interpolador = casco.funcoes_baliza.get(x_val)
+        if interpolador:
+            z_coords_orig = casco.df[casco.df['X'] == x_val]['Z']
+            z_interp = np.linspace(z_coords_orig.min(), z_coords_orig.max(), 50)
+            y_interp = interpolador(z_interp)
             
-            fig.add_trace(go.Scatter(x=df[coluna], y=df[eixo_y_coluna], name=coluna, visible=visible_status))
+            nome_da_legenda = f'Baliza {x_val:.2f}'
+            # Linha de estibordo (direita)
+            traces_3d.append(go.Scatter3d(
+                x=[x_val]*50, y=list(y_interp), z=list(z_interp), mode='lines', 
+                line=dict(color='green'), name=nome_da_legenda, legendgroup=nome_da_legenda, visible=False
+            ))
+            # Linha de bombordo (esquerda)
+            traces_3d.append(go.Scatter3d(
+                x=[x_val]*50, y=list(-y_interp), z=list(z_interp), mode='lines', 
+                line=dict(color='green'), showlegend=False, legendgroup=nome_da_legenda, visible=False
+            ))
+    # Linha Perfil 3D
+    if casco.funcao_perfil:
+        x_interp = np.linspace(min(casco.posicoes_balizas), max(casco.posicoes_balizas), 100)
+        z_interp = casco.funcao_perfil(x_interp)
+        traces_3d.append(go.Scatter3d(x=list(x_interp), y=[0]*100, z=list(z_interp), mode='lines', line=dict(color='royalblue', width=3), name='Perfil 3D', visible=False))
 
-    # 2. Cria os botões COM BASE NOS TRAÇOS QUE REALMENTE EXISTEM (fig.data)
+    # Traços para as CURVAS HIDROSTÁTICAS 2D
+    traces_2d_curvas = []
+    eixo_y_coluna = 'Calado (m)'
+    colunas_hidro = [col for col in df_resultados.columns if col != eixo_y_coluna]
+    for coluna in colunas_hidro:
+        traces_2d_curvas.append(go.Scatter(x=list(df_resultados[coluna]), y=list(df_resultados[eixo_y_coluna]), name=coluna, visible=False))
+
+    fig.add_traces(traces_3d + traces_2d_curvas)
+
+    # --- Passo 2: Criar os botões do DropDown ---
     botoes = []
-    # Itera sobre os traços que foram de fato adicionados à figura
-    for i, trace in enumerate(fig.data):
-        # Cria uma lista de visibilidade com o tamanho exato do número de traços
-        visibilidade = [False] * len(fig.data)
-        visibilidade[i] = True # Ativa apenas o traço correspondente a este botão
-        
-        botoes.append(
-            dict(
-                method='restyle',
-                label=trace.name, # Pega o nome do próprio traço
-                args=[{'visible': visibilidade},
-                      {'xaxis.title': trace.name}] # Atualiza o título do eixo X
-            )
-        )
+    
+    # Botão para o Gráfico 3D
+    layout_3d = {
+        'title': 'Visualização 3D do Casco',
+        'scene': {
+            'visible': True,
+            'aspectmode': 'data',  # <-- A CORREÇÃO CRÍTICA ESTÁ AQUI
+            'xaxis': {'title': 'Comprimento (X)'},
+            'yaxis': {'title': 'Boca (Y)'},
+            'zaxis': {'title': 'Altura (Z)'}
+        },
+        'xaxis': {'visible': False},
+        'yaxis': {'visible': False}
+    }
 
-    # 3. Adiciona o menu DropDown ao layout
+    visibilidade_3d = [True] * len(traces_3d) + [False] * len(traces_2d_curvas)
+    botoes.append(dict(method='update', label='Casco 3D', args=[{'visible': visibilidade_3d}, layout_3d]))
+
+    # Botões para cada Curva Hidrostática 2D
+    for i, trace in enumerate(traces_2d_curvas):
+        visibilidade = [False] * len(fig.data)
+        visibilidade[len(traces_3d) + i] = True
+        layout_2d = {
+            'title': f'Curva de {trace.name}',
+            'scene': {'visible': False},
+            'xaxis': {'visible': True, 'title': trace.name},
+            'yaxis': {'visible': True, 'title': eixo_y_coluna}
+        }
+        botoes.append(dict(method='update', label=trace.name, args=[{'visible': visibilidade}, layout_2d]))
+
+    # --- Passo 3: Adicionar o menu e o layout ---
     fig.update_layout(
         updatemenus=[dict(
-            active=0,
-            buttons=botoes,
-            direction="down",
-            pad={"r": 10, "t": 10},
-            showactive=True,
-            x=0.01, xanchor="left", y=1.15, yanchor="top"
+            active=0, buttons=botoes, direction="down",
+            pad={"r": 10, "t": 10}, showactive=True,
+            x=1.007, xanchor="right", y=1.01, yanchor="bottom"
         )],
-        title="Curvas Hidrostáticas",
-        xaxis_title=fig.data[0].name if fig.data else "Valores",
-        yaxis_title=eixo_y_coluna
+        title="Visualizador de Curvas e Geometria",
+        paper_bgcolor="#f0f1e6",
+    )
+
+    # Define a CENA 3D (para quando os traços 3D estiverem visíveis)
+    dbg3d = dict(
+        showbackground = True, 
+        backgroundcolor ="rgb(200, 200, 230)", 
+        gridcolor = "rgb(200, 200, 230)",  
+        zeroline = False)
+    
+    fig.update_layout(
+        scene=dict(
+            aspectmode='data', 
+            xaxis_title='Comprimento (X)', 
+            yaxis_title='Boca (Y)', 
+            zaxis_title='Altura (Z)',
+            ),
+        template='plotly_white',
+        margin=dict(t=10, b=10, l=10, r=10),
     )
     
+    # Ativa a primeira opção ("Casco 3D") por padrão
+    for trace in traces_3d:
+        trace.visible = True
+
     return fig.to_html(full_html=False, include_plotlyjs=False)
